@@ -1,0 +1,29 @@
+name: Send digest to Telegram
+on:
+  repository_dispatch:
+    types: [send-digest]
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Telegram
+        env:
+          TEXT: ${{ github.event.client_payload.text }}
+          BOT_TOKEN: ${{ vars.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ vars.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 -c "
+          import os, json, urllib.request
+          text = os.environ['TEXT']
+          token = os.environ['BOT_TOKEN']
+          chat_id = os.environ['CHAT_ID']
+          data = json.dumps({'chat_id': chat_id, 'text': text}).encode()
+          req = urllib.request.Request(
+            f'https://api.telegram.org/bot{token}/sendMessage',
+            data=data,
+            headers={'Content-Type': 'application/json'}
+          )
+          resp = urllib.request.urlopen(req)
+          print(resp.read().decode())
+          "
