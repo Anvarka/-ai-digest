@@ -18,7 +18,7 @@ jobs:
           text = os.environ['TEXT']
           token = os.environ['BOT_TOKEN']
           chat_id = os.environ['CHAT_ID']
-          data = json.dumps({'chat_id': chat_id, 'text': text, 'parse_mode': 'Markdown'}).encode()
+          data = json.dumps({'chat_id': chat_id, 'text': text}).encode()
           req = urllib.request.Request(
             f'https://api.telegram.org/bot{token}/sendMessage',
             data=data,
